@@ -14,7 +14,7 @@ centrality:
 	$(CC) $(CFLAGS) Dijkstra.c graph.c PQ.c CentralityMeasures.c testClose.c -o testClose
 
 clean :
-	rm -f $(BINS)
+	rm -f testDij testClose 
 
 testDijkstra :
 	make && valgrind --tool=memcheck --leak-check=full --track-origins=yes ./testDij
