@@ -51,7 +51,10 @@ ShortestPaths dijkstra(Graph g, Vertex src) {
                 PredNode* predCrawl = dij.pred[outPaths->v];
                 while (predCrawl->next != NULL) predCrawl = predCrawl->next;
                 predCrawl->next = newPred;
-            } else continue;
+            } else {
+                free(newPred);
+                continue;
+            }
             ItemPQ next;
             next.key = outPaths->v;
             next.value = dij.dist[outPaths->v];

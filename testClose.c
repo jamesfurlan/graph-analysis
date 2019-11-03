@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "Dijkstra.h"
+#include "CentralityMeasures.h"
 
 int main(void) {
     Graph g = GraphNew(3);
@@ -7,8 +8,10 @@ int main(void) {
     GraphInsertEdge(g, 0, 2, 1);
     GraphInsertEdge(g, 1, 0, 2);
     GraphInsertEdge(g, 2, 1, 1);
-    ShortestPaths test = dijkstra(g, 1);
-    showShortestPaths(test);
+    GraphShow(g);
+    printf("===========\n");
+    NodeValues test = closenessCentrality(g);
+    showNodeValues(test);
     GraphFree(g);
-    freeShortestPaths(test);
+    freeNodeValues(test);
 }

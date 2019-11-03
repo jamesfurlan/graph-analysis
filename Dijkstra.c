@@ -51,7 +51,10 @@ ShortestPaths dijkstra(Graph g, Vertex src) {
                 PredNode* predCrawl = dij.pred[outPaths->v];
                 while (predCrawl->next != NULL) predCrawl = predCrawl->next;
                 predCrawl->next = newPred;
-            } else continue;
+            } else {
+                free(newPred);
+                continue;
+            }
             ItemPQ next;
             next.key = outPaths->v;
             next.value = dij.dist[outPaths->v];
@@ -67,18 +70,18 @@ ShortestPaths dijkstra(Graph g, Vertex src) {
 
 void showShortestPaths(ShortestPaths sps) {
     printf("numNodes: %d\n", sps.numNodes);
-    printf("src: %d\n", sps.src);
+    printf("src: %d\n\n", sps.src);
     for (int i = 0; i < sps.numNodes; i++) {
-        if (i == sps.src) printf("Node %d dist: X\n", i);
-        else printf("Node %d dist: %d\n", i, sps.dist[i]);
+        if (i == sps.src) printf("Vertex %d\n    dist: X\n", i);
+        else printf("Vertex %d\n    dist: %d\n", i, sps.dist[i]);
 
         PredNode *predCrawl = sps.pred[i];
-        printf("Path: ");
+        printf("    Path: ");
         while (predCrawl != NULL) {
             printf("[%d]->", predCrawl->v);
             predCrawl = predCrawl->next;
         }
-        printf("NULL\n");
+        printf("NULL\n\n");
     }
 }
 
