@@ -89,7 +89,8 @@ void freeNodeValues(NodeValues nvs) {
     free(nvs.values);
 }
 
-// am i actually a genius? why am i dumb
+// would be better to change this later to be more algorithmically efficient
+// currently goes through every pair of nodes n times - could go through once storing all n data as it goes in an array
 static void recursiveCounter(PredNode** pred, PredNode* start, Vertex target, int* totalCount, int* VIPcount, int VIPflag) {
     if (start == NULL) {
         (*totalCount)++;
