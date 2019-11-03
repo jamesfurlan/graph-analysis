@@ -10,7 +10,7 @@ int main(void) {
     GraphInsertEdge(g, 2, 1, 1);
     GraphShow(g);
     printf("===========\n");
-    NodeValues test = closenessCentrality(g);
+    NodeValues test = betweennessCentrality(g);
     showNodeValues(test);
     GraphFree(g);
     freeNodeValues(test);
