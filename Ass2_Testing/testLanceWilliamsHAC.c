@@ -62,6 +62,7 @@ int main(int argc, char* argv[]) {
 	Tree allTree = printDendrogram(dn, 1);
 	printClusters(allTree, 0);
 	freeDendrogram(dn);
+    freeTree(allTree);
 	
 	GraphFree(g);	
 }

@@ -9,8 +9,6 @@
 
 #define MAX_INT 2147483647
 
-// static void printDendo(Dendrogram a);
-
 /**
  * Generates  a Dendrogram using the Lance-Williams algorithm (discussed
  * in the spec) for the given graph  g  and  the  specified  method  for
@@ -51,22 +49,7 @@ Dendrogram LanceWilliamsHAC(Graph g, int method) {
 
     // oh yeah. it's all coming together
     for (int i = 1; i < vertCount; i++) {
-        // for (int j = 0; j < vertCount - i + 1; j++) {
-        //     printf("dendo %d\n", j);
-        //     printDendo(dendA[j]);
-        //     putchar('\n');
-        // }
-
-        // printf("===DISTANCES===\n");
-        // for (int j = 0; j < vertCount - i + 1; j++) {
-        //     printf("From %d", j);
-        //     for (int k = 0; k < vertCount - i + 1; k++) {
-        //         printf(" to %d = %lf\n", k, distance[j][k]);
-        //     }
-        // }
-
-
-        double min = MAX_INT;
+        int min = MAX_INT;
         int vert1 = 0;
         int vert2 = 0;
         for (int j = 0; j < vertCount + 1 - i; j++) {
@@ -78,33 +61,30 @@ Dendrogram LanceWilliamsHAC(Graph g, int method) {
                 }
             }
         }
-        // printf("j = %d\nk = %d\n", vert1, vert2);
-
         Dendrogram ci = dendA[vert1];
         Dendrogram cj = dendA[vert2];
-        for (int j = vert1; j < vertCount - 1; j++)
+        for (int j = vert1; j < vertCount; j++)
             dendA[j] = dendA[j + 1];
         int second = vert2;
         if (vert2 > vert1) second--;
-        for (int j = second; j < vertCount - 1; j++)
+        for (int j = second; j < vertCount; j++)
             dendA[j] = dendA[j + 1];
 
         Dendrogram dendNew = malloc(sizeof(*dendNew));
-        dendA[vertCount - 1 - i] = dendNew;
-        dendA[vertCount - 1 - i]->vertex = -1;
-        dendA[vertCount - 1 - i]->left = ci;
-        dendA[vertCount - 1 - i]->right = cj;
+        dendA[vertCount + 1 - i] = dendNew;
+        dendA[vertCount + 1 - i]->vertex = -1;
+        dendA[vertCount + 1 - i]->left = ci;
+        dendA[vertCount + 1 - i]->right = cj;
 
         // calculate distance to new cluster
-        double newDist[vertCount - i];
+        int newDist[vertCount - i];
         int index = 0;
-        for (int j = 0; j < vertCount - i + 1; j++) {
+        for (int j = 0; j < vertCount - i - 1; j++) {
             if (j == vert1 || j == vert2) continue;
             if (method == 1)
                 newDist[index] = (distance[vert1][j] < distance[vert2][j] ? distance[vert1][j] : distance[vert2][j]);
             else
-                newDist[index] = (distance[vert1][j] > distance[vert2][j] ? distance[vert1][j] : distance[vert2][j]); 
-            // printf("index %d = %lf\n", index, newDist[index]);
+                newDist[index] = (distance[vert1][j] > distance[vert2][j] ? distance[vert1][j] : distance[vert2][j]);                
             index++;
         }
         newDist[vertCount - i - 1] = MAX_INT;
@@ -118,24 +98,17 @@ Dendrogram LanceWilliamsHAC(Graph g, int method) {
                 distance[j][k] = distance[j + 1][k];
         for (int j = vert1; j < vertCount; j++)
             for (int k = 0; k < vertCount; k++)
-                distance[k][j] = distance[k][j + 1];
+                distance[k][k] = distance[k][j + 1];
         for (int j = second; j < vertCount; j++)
             for (int k = 0; k < vertCount; k++)
                 distance[k][j] = distance[k][j + 1];
 
         for (int j = 0; j < vertCount - i; j++) {
-            distance[j][vertCount - i - 1] = distance[vertCount - i - 1][j] = newDist[j];
+            distance[j][vertCount - 2] = distance[vertCount - 2][j] = newDist[j];
         }
 
     }
-
-    // for (int j = 0; j < 1; j++) {
-    //     printf("dendo %d\n", j);
-    //     printDendo(dendA[j]);
-    //     putchar('\n');
-    // }
-
-    return dendA[0];
+    return dendA[1];
 }
 
 /**
@@ -148,9 +121,3 @@ void freeDendrogram(Dendrogram d) {
     free(d);
 }
 
-// static void printDendo(Dendrogram a) {
-//     if (a == NULL) return;
-//     printf("%d ", a->vertex);
-//     printDendo(a->left);
-//     printDendo(a->right);
-// }

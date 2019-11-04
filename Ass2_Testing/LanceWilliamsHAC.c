@@ -20,6 +20,7 @@
  * The function returns a 'Dendrogram' structure.
  */
 Dendrogram LanceWilliamsHAC(Graph g, int method) {
+    // GraphShow(g);
     // calculate distances between each pair of vertices
     int vertCount = GraphNumVertices(g);
     double distance[vertCount][vertCount];
