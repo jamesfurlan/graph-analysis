@@ -72,7 +72,8 @@ Dendrogram LanceWilliamsHAC(Graph g, int method) {
         int vert2 = 0;
         for (int j = 0; j < vertCount + 1 - i; j++) {
             for (int k = j; k < vertCount + 1 - i; k++) {
-                if (distance[j][k] < min) {
+                if (distance[j][k] <= min) {
+                    if (j == k) continue;
                     min = distance[j][k];
                     vert1 = j;
                     vert2 = k;

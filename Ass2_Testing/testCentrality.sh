@@ -2,7 +2,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 n="6"
-#make || exit
+make || exit
 mkdir -p output
 if [ $# -eq 1 ]; then
   i=$1

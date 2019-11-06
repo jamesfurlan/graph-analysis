@@ -50,9 +50,7 @@ NodeValues betweennessCentrality(Graph g) {
             // dijkstra
             ShortestPaths dij = dijkstra(g, j);
             // hold total shortest paths
-            int shortTotal = 0;
             // hold total shortest paths w/ member
-            int includeTotal = 0;
             for (int k = 0; k < nvs.numNodes; k++) {
                 if (k == i || k == j) continue;
 
