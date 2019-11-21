@@ -15,6 +15,7 @@ NodeValues closenessCentrality(Graph g) {
     nvs.numNodes = GraphNumVertices(g);
     nvs.values = malloc(sizeof(double) * nvs.numNodes);
     for (int i = 0; i < nvs.numNodes; i++) {
+        // To avoid later attempts to divide by 0
         if (nvs.numNodes == 1) {
             nvs.values[i] = 0;
             continue;
@@ -92,15 +93,17 @@ void freeNodeValues(NodeValues nvs) {
 // would be better to change this later to be more algorithmically efficient
 // currently goes through every pair of nodes n times - could go through once storing all n data as it goes in an array
 static void recursiveCounter(PredNode** pred, PredNode* start, Vertex target, int* totalCount, int* VIPcount, int VIPflag) {
+    // At the end of a route it increments the required counters
     if (start == NULL) {
         (*totalCount)++;
         if (VIPflag) (*VIPcount)++;
         return;
     }
-    
+    // Goes through all side pred parts that have equal shortest distances
     if (start->next != NULL) recursiveCounter(pred, start->next, target, totalCount, VIPcount, VIPflag);
-
+    // Sets the VIP flag to true so that when it gets to the end all branching 
+    // routes from here will be acknowledged as having passed the required node
     if (start->v == target) VIPflag = 1;
-
+    // Moves to the next in the pred route
     recursiveCounter(pred, pred[start->v], target, totalCount, VIPcount, VIPflag);
 }

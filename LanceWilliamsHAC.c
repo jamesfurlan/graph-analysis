@@ -3,11 +3,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "Graph.h"
 #include "LanceWilliamsHAC.h"
 
-#define MAX_INT 2147483647
+#define MAX_INT 2147483647 // nicer than an extra (x != -1 || x < ...)
 
 // static void printDendo(Dendrogram a);
 
@@ -20,6 +21,7 @@
  * The function returns a 'Dendrogram' structure.
  */
 Dendrogram LanceWilliamsHAC(Graph g, int method) {
+    assert(method == SINGLE_LINKAGE || method == COMPLETE_LINKAGE);
     // calculate distances between each pair of vertices
     int vertCount = GraphNumVertices(g);
     double distance[vertCount][vertCount];
@@ -101,7 +103,7 @@ Dendrogram LanceWilliamsHAC(Graph g, int method) {
         int index = 0;
         for (int j = 0; j < vertCount - i + 1; j++) {
             if (j == vert1 || j == vert2) continue;
-            if (method == 1)
+            if (method == SINGLE_LINKAGE)
                 newDist[index] = (distance[vert1][j] < distance[vert2][j] ? distance[vert1][j] : distance[vert2][j]);
             else
                 newDist[index] = (distance[vert1][j] > distance[vert2][j] ? distance[vert1][j] : distance[vert2][j]); 
