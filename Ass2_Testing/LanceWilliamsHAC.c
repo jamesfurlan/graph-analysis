@@ -3,13 +3,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "Graph.h"
 #include "LanceWilliamsHAC.h"
 
-#define MAX_INT 2147483647
-
-// static void printDendo(Dendrogram a);
+#define MAX_INT 2147483647 // nicer than an extra (x != -1 || x < ...)
 
 /**
  * Generates  a Dendrogram using the Lance-Williams algorithm (discussed
@@ -20,13 +19,13 @@
  * The function returns a 'Dendrogram' structure.
  */
 Dendrogram LanceWilliamsHAC(Graph g, int method) {
-    // GraphShow(g);
-    // calculate distances between each pair of vertices
+    assert(method == SINGLE_LINKAGE || method == COMPLETE_LINKAGE);
+    // Calculate distances between each pair of vertices
     int vertCount = GraphNumVertices(g);
     double distance[vertCount][vertCount];
     Dendrogram dendA[vertCount];
     for (int i = 0; i < vertCount; i++) {
-        for (int j = i; j < vertCount; j++) {  // slightly faster than direct O(n^2)
+        for (int j = i; j < vertCount; j++) {
             if (!GraphIsAdjacent(g, i, j) && !GraphIsAdjacent(g, j, i)) {
                 distance[i][j] = distance[j][i] = MAX_INT;
                 continue;
@@ -48,25 +47,7 @@ Dendrogram LanceWilliamsHAC(Graph g, int method) {
         dendA[i]->right = NULL;
     }
 
-    // too complex - needs fixing
-
-    // oh yeah. it's all coming together
     for (int i = 1; i < vertCount; i++) {
-        // for (int j = 0; j < vertCount - i + 1; j++) {
-        //     printf("dendo %d\n", j);
-        //     printDendo(dendA[j]);
-        //     putchar('\n');
-        // }
-
-        // printf("===DISTANCES===\n");
-        // for (int j = 0; j < vertCount - i + 1; j++) {
-        //     printf("From %d", j);
-        //     for (int k = 0; k < vertCount - i + 1; k++) {
-        //         printf(" to %d = %lf\n", k, distance[j][k]);
-        //     }
-        // }
-
-
         double min = MAX_INT;
         int vert1 = 0;
         int vert2 = 0;
@@ -80,8 +61,6 @@ Dendrogram LanceWilliamsHAC(Graph g, int method) {
                 }
             }
         }
-        // printf("j = %d\nk = %d\n", vert1, vert2);
-
         Dendrogram ci = dendA[vert1];
         Dendrogram cj = dendA[vert2];
         for (int j = vert1; j < vertCount - 1; j++)
@@ -102,40 +81,30 @@ Dendrogram LanceWilliamsHAC(Graph g, int method) {
         int index = 0;
         for (int j = 0; j < vertCount - i + 1; j++) {
             if (j == vert1 || j == vert2) continue;
-            if (method == 1)
+            if (method == SINGLE_LINKAGE)
                 newDist[index] = (distance[vert1][j] < distance[vert2][j] ? distance[vert1][j] : distance[vert2][j]);
             else
                 newDist[index] = (distance[vert1][j] > distance[vert2][j] ? distance[vert1][j] : distance[vert2][j]); 
-            // printf("index %d = %lf\n", index, newDist[index]);
             index++;
         }
         newDist[vertCount - i - 1] = MAX_INT;
 
         // remove old 2 clusters distances and insert new one
         for (int j = vert1; j < vertCount; j++)
-            for (int k = 0; k < vertCount; k++)
+            for (int k = 0; k < vertCount; k++) {
                 distance[j][k] = distance[j + 1][k];
+                distance[k][j] = distance[k][j + 1];
+            }
         for (int j = second; j < vertCount; j++)
-            for (int k = 0; k < vertCount; k++)
+            for (int k = 0; k < vertCount; k++) {
                 distance[j][k] = distance[j + 1][k];
-        for (int j = vert1; j < vertCount; j++)
-            for (int k = 0; k < vertCount; k++)
                 distance[k][j] = distance[k][j + 1];
-        for (int j = second; j < vertCount; j++)
-            for (int k = 0; k < vertCount; k++)
-                distance[k][j] = distance[k][j + 1];
+            }
 
-        for (int j = 0; j < vertCount - i; j++) {
+        for (int j = 0; j < vertCount - i; j++)
             distance[j][vertCount - i - 1] = distance[vertCount - i - 1][j] = newDist[j];
-        }
 
     }
-
-    // for (int j = 0; j < 1; j++) {
-    //     printf("dendo %d\n", j);
-    //     printDendo(dendA[j]);
-    //     putchar('\n');
-    // }
 
     return dendA[0];
 }
@@ -149,10 +118,3 @@ void freeDendrogram(Dendrogram d) {
     freeDendrogram(d->right);
     free(d);
 }
-
-// static void printDendo(Dendrogram a) {
-//     if (a == NULL) return;
-//     printf("%d ", a->vertex);
-//     printDendo(a->left);
-//     printDendo(a->right);
-// }

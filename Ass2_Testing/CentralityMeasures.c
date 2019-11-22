@@ -61,7 +61,10 @@ NodeValues betweennessCentrality(Graph g) {
 
                 if (totalCount != 0)
                     sum += (double)VIPcount/totalCount;
-                    
+                if (VIPcount) {
+                    printf("passi = %d numOfPaths = %d\n", VIPcount, totalCount);
+                    printf("i = %d j = %d k = %d sum = %lf\n", i, j, k, sum);
+                }
                 // shortTotal += totalCount;
                 // includeTotal += VIPcount;
 
